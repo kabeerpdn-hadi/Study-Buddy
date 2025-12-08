@@ -17,8 +17,13 @@ const userSchema = new mongoose.Schema({
         select: false  // ✅ Added: Hide password by default
     },
     badges: [{ type: mongoose.Schema.Types.ObjectId, ref: "badge" }],
+
     money: { type: Number, default: 0, min: 0 },
+
     plan: { type: String, enum: ["free", "premium"], default: "free" },
+
+    level: { type: Number, default: 1 },
+
     role: { type: String, enum: ["customer", "admin"], default: "customer" }  // ✅ Fixed typo
 }, { timestamps: true });
 
