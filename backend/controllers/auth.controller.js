@@ -1,4 +1,3 @@
-import { set } from "mongoose";
 import User from "../models/user.models.js";
 import jwt from "jsonwebtoken";
 
@@ -50,7 +49,12 @@ export const signup = async (req, res) => {
     setCookie("refreshToken", refreshToken, { res });
 
     res.status(201).json({
-      user: { name: user.name, email: user.email, _id: user._id, role: user.role },
+      user: {
+        name: user.name,
+        email: user.email,
+        _id: user._id,
+        role: user.role,
+      },
       message: "User created successfully",
     });
   } catch (error) {
@@ -62,7 +66,7 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
 
     if (user && (await user.comparePassword(password))) {
       const { accessToken, refreshToken } = generateTokens(user._id);
@@ -73,14 +77,19 @@ export const login = async (req, res) => {
       setCookie("refreshToken", refreshToken, { res });
 
       res.json({
-        user: { name: user.name, email: user.email, _id: user._id, role: user.role },
+        user: {
+          name: user.name,
+          email: user.email,
+          _id: user._id,
+          role: user.role,
+        },
         message: "User logged in successfully",
       });
     } else {
       res.status(401).json({ message: "Invalid email or password" });
     }
   } catch (error) {
-    console.log("error in login controller" +error);
+    console.log("error in login controller" + error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -89,7 +98,10 @@ export const logout = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
     if (refreshToken) {
-      const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET
+      );
       await User.findByIdAndUpdate(decoded.userId, { refreshToken: "" });
     }
 
@@ -98,6 +110,63 @@ export const logout = async (req, res) => {
     res.json({ message: "Logged out successfully" });
   } catch (error) {
     console.log("error in logout controller" + error);
-    res.status(500).json({ message: "server error",error:error.message });
+    res.status(500).json({ message: "server error", error: error.message });
   }
 };
+
+export const refreshToken = async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Refresh token not found" });
+    }
+
+    // 1) Verify the JWT
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    // 2) Load user's stored refreshToken from DB
+    const user = await User.findById(decoded.userId).select("refreshToken");
+
+    // 3) Validate: user exists AND token exists AND matches exactly
+    if (!user || !user.refreshToken || user.refreshToken !== refreshToken) {
+      return res.status(401).json({ message: "Invalid refresh token" });
+    }
+
+    // 4) Create new access token
+    const accessToken = jwt.sign(
+      { userId: decoded.userId },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    // 5) Optionally rotate refresh token (more secure)
+    // const { refreshToken: newRefreshToken } = generateTokens(decoded.userId);
+    // await storeRefreshToken(decoded.userId, newRefreshToken);
+
+    // 6) Set new access token cookie
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 15 * 60 * 1000,
+    });
+
+    // If you rotate, also reset refresh cookie:
+    // setCookie("refreshToken", newRefreshToken, { res });
+
+    res.json({ message: "Token refreshed successfully" });
+  } catch (error) {
+    console.log("error in refresh token controller", error);
+    return res
+      .status(401)
+      .json({ message: "Invalid or expired refresh token" });
+  }
+};
+
+export const getProfile = async (req, res) => {
+  
+}
