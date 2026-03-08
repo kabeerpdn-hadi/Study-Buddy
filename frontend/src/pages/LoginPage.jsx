@@ -1,11 +1,13 @@
 import { useState } from "react"
 import axios from "../libraries/axios.js"
 import { useNavigate } from "react-router-dom"
+import useUserStore from "../store/useUserStore.js"
 
 const LoginPage = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const navigate = useNavigate()
+  const setUser = useUserStore((state) => state.setUser)
 
   const handleLogin = async (e) => {
     // what should go here?
@@ -15,6 +17,7 @@ const LoginPage = () => {
         password
     })
     console.log(response)
+    setUser(response.data.user)
     navigate("/dashboard")
   }
 

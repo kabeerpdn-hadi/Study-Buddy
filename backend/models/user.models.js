@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
 
     level: { type: Number, default: 1 },
 
-    role: { type: String, enum: ["customer", "admin"], default: "customer" } , // ✅ Fixed typo
+    role: { type: String, enum: ["student", "teacher", "admin"], default: "student" } , // ✅ Fixed typo
 
     refreshToken: { type: String, default: null },
 }, { timestamps: true });

@@ -82,6 +82,8 @@ export const login = async (req, res) => {
           email: user.email,
           _id: user._id,
           role: user.role,
+          level: user.level,
+          money: user.money
         },
         message: "User logged in successfully",
       });
@@ -108,6 +110,7 @@ export const logout = async (req, res) => {
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
     res.json({ message: "Logged out successfully" });
+    
   } catch (error) {
     console.log("error in logout controller" + error);
     res.status(500).json({ message: "server error", error: error.message });
@@ -172,5 +175,5 @@ export const getDashboard = async (req, res) => {
 }
 
 export const getProfile = async (req, res) => {
-  
+  res.json({ user: req.user });
 }

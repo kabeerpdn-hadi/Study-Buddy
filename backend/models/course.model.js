@@ -25,6 +25,8 @@ const courseSchema = new mongoose.Schema(
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true },
     lessons: [lessonSchema],
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+// not author: [{ ... }]
   },
   { timestamps: true }
 );

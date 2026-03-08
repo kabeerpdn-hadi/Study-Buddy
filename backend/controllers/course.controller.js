@@ -1,5 +1,5 @@
 import Course from "../models/course.model.js";
-import { generateCourse } from "../services/gemini.services.js";
+import { generateCourse } from "../services/groq.services.js";
 
 // GET /api/course
 export const getCourses = async (req, res) => {
@@ -22,6 +22,16 @@ export const getCourseById = async (req, res) => {
   }
 };
 
+export const getMyCourses = async (req, res) => {
+  try {
+    const courses = await Course.find({ author: req.userId })
+    res.json({ courses })
+  } catch (err) {
+    console.error("getMyCourses error:", err)
+    res.status(500).json({ message: "Server error", error: err.message })
+  }
+}
+
 // POST /api/course
 export const createCourse = async (req, res) => {
   try {
@@ -37,7 +47,8 @@ export const createCourse = async (req, res) => {
     const course = await Course.create({
       title: courseData.title,
       description: courseData.description,
-      lessons: courseData.lessons
+      lessons: courseData.lessons,
+      author: req.userId
     });
 
     res.status(201).json({ 
