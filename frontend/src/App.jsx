@@ -10,6 +10,8 @@ import Layout from "./components/Layout";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import LessonPage from "./pages/LessonPage";
 import { useLocation } from "react-router-dom";
+import BrowseCoursesPage from "./pages/BrowseCoursePage";
+import LeaderBoardPage from "./pages/LeaderBoardPage";
 
 function App() {
   const setUser = useUserStore((state) => state.setUser);
@@ -64,6 +66,24 @@ function App() {
           </Layout>
         }
       />
+      <Route
+        path="/courses"
+        element={
+          <Layout>
+            <BrowseCoursesPage />
+          </Layout>
+        }
+      >
+      </Route>
+      <Route
+        path="/leaderboard"
+        element={
+          <Layout>
+            <LeaderBoardPage />
+          </Layout>
+        }
+      >
+      </Route>
     </Routes>
   );
 }

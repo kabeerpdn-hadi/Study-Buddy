@@ -177,3 +177,12 @@ export const getDashboard = async (req, res) => {
 export const getProfile = async (req, res) => {
   res.json({ user: req.user });
 }
+
+export const getLeaderboard = async (req, res) => {
+  const users = await User.find({})
+    .sort({ level: -1 })          // highest level first
+    .select("name level money")   // only these 3 fields
+    .limit(20)                    // top 20 only
+  
+  res.json({ users })
+}
