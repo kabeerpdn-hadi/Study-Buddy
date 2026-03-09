@@ -32,12 +32,40 @@ Format as valid JSON only, no extra text:
       "content": "..."
     }
   ]
-}`
-      }
+}`,
+      },
     ],
   });
 
   const jsonText = completion.choices[0].message.content.trim();
   const jsonMatch = jsonText.match(/\{.*\}/s);
+  return JSON.parse(jsonMatch[0]);
+};
+
+export const generateQuestions = async (lesson, level = "beginner") => {
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      {
+        role: "user",
+        content: `Generate 5-10 multiple choice questions about "${lesson}" for ${level} level students.
+
+        Requirements:
+        - Question (1 sentence)
+
+        Format as valid JSON only, no extra text:
+        [
+          {
+            "question": "What is...?",
+            "options": ["full answer A", "full answer B", "full answer C", "full answer D"],
+            "answer": "full answer A"  // must exactly match one of the options!
+          }
+        ]`,
+      },
+    ],
+  });
+
+  const jsonText = completion.choices[0].message.content.trim();
+  const jsonMatch = jsonText.match(/\[.*\]/s);
   return JSON.parse(jsonMatch[0]);
 };

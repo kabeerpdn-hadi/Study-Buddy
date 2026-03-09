@@ -94,7 +94,11 @@ const DashboardPage = () => {
                 console.log(completed, total, progress)
 
                 return (
-                    <div key={course.title} className="bg-gray-800 rounded-2xl p-4">
+                    <div 
+                        key={course.title} 
+                        className="bg-gray-800 rounded-2xl p-4 hover:scale-105 transition-transform"
+                        onClick={() => navigate(`/courses/${course._id}`)}
+                    >
                         <div className="flex items-center justify-between mb-2">
                             <span className="font-bold flex items-center gap-2">{course.title}</span>
                             <span className="text-sm text-gray-400 font-semibold">{progress}%</span>
