@@ -3,6 +3,7 @@ import {
   generateCourse,
   generateQuestions,
 } from "../services/groq.services.js";
+import User from "../models/user.models.js";
 
 // GET /api/course
 export const getCourses = async (req, res) => {
@@ -91,11 +92,36 @@ export const completeLesson = async (req, res) => {
     const course = await Course.findById(courseId);
     const lesson = course.lessons.find((l) => l._id.toString() === lessonId);
 
+    if (lesson.completed === true) {
+      return res.status(400).json({ message: "Lesson already completed" })
+    }
+
+    const updateUser = await User.findByIdAndUpdate(
+      req.userId,
+      { $inc: { lessonsCompleted: 1, money: 10, level: 1 } },
+      { new: true }
+    );
     lesson.completed = true;
+
+    const isCourseComplete = course.lessons.every((lesson) => lesson.completed);
+
+    if (isCourseComplete) {
+      await User.findByIdAndUpdate(req.userId, { $push: { badges: "Nooby Learner" } });
+    }
+
+    if (updateUser.lessonsCompleted == 1) {
+      await User.findByIdAndUpdate(req.userId, { $push: { badges: "1st Step" } })
+    }
+    if (updateUser.lessonsCompleted == 10) {
+      await User.findByIdAndUpdate(req.userId, { $push: { badges: "Working your way up" } })
+    }
+    if (updateUser.lessonsCompleted == 50) {
+      await User.findByIdAndUpdate(req.userId, { $push: { badges: "Serious learner" } })
+    }
 
     await course.save();
 
-    res.json({ message: "Lesson completed!" });
+    res.json({ message: "Lesson completed!", user: updateUser });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }

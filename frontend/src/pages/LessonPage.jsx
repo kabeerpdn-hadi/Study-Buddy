@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "../libraries/axios";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import useUserStore from "../store/useUserStore";
 
 const LessonPage = () => {
   const { courseId, lessonId } = useParams();
@@ -11,6 +12,7 @@ const LessonPage = () => {
   const [hearts, setHearts] = useState(5);
   const [selected, setSelected] = useState(null);
   const navigate = useNavigate();
+  const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
     const fetchLesson = async () => {
@@ -33,9 +35,12 @@ const LessonPage = () => {
 
   useEffect(() => {
     if (questions.length > 0 && currentQuestion === questions.length) {
-      // call the API to mark complete
-      axios.patch(`/api/course/${courseId}/lesson/${lessonId}/complete`);
-      navigate(`/courses/${courseId}`);
+      const complete = async () => { // fix 2
+        const response = await axios.patch(`/api/course/${courseId}/lesson/${lessonId}/complete`)
+        setUser(response.data.user) // fix 3 - what field did you send back?
+        navigate(`/courses/${courseId}`)
+      }
+      complete()
     }
   }, [currentQuestion, questions]);
 
@@ -57,11 +62,10 @@ const LessonPage = () => {
           key={option}
           onClick={() => setSelected(option)}
           className={`w-full p-4 rounded-2xl font-bold text-left mb-3 border-2 transition-all
-      ${
-        selected === option
-          ? "bg-blue-500 border-blue-400 text-white"
-          : "bg-gray-800 border-gray-600 text-white hover:border-gray-400"
-      }`}
+      ${selected === option
+              ? "bg-blue-500 border-blue-400 text-white"
+              : "bg-gray-800 border-gray-600 text-white hover:border-gray-400"
+            }`}
         >
           {option}
         </button>

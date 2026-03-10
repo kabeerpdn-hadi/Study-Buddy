@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
         minlength: [6, "Password must be at least 6 characters long"],
         select: false  // ✅ Added: Hide password by default
     },
-    badges: [{ type: mongoose.Schema.Types.ObjectId, ref: "badge" }],
+    badges: [{ type: String }],
 
     money: { type: Number, default: 0, min: 0 },
 
@@ -27,6 +27,8 @@ const userSchema = new mongoose.Schema({
     role: { type: String, enum: ["student", "teacher", "admin"], default: "student" } , // ✅ Fixed typo
 
     refreshToken: { type: String, default: null },
+
+    lessonsCompleted: { type: Number, default: 0 },
 }, { timestamps: true });
 
 userSchema.pre("save", async function() {  // ✅ FIXED: No 'next'
