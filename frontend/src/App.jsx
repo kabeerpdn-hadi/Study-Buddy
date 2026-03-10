@@ -12,6 +12,7 @@ import LessonPage from "./pages/LessonPage";
 import { useLocation } from "react-router-dom";
 import BrowseCoursesPage from "./pages/BrowseCoursePage";
 import LeaderBoardPage from "./pages/LeaderBoardPage";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   const setUser = useUserStore((state) => state.setUser);
@@ -32,6 +33,7 @@ function App() {
 
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route
