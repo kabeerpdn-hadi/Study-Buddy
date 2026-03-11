@@ -6,6 +6,7 @@ import useUserStore from "../store/useUserStore.js"
 const LoginPage = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [error, setError] = useState("")
     const navigate = useNavigate()
     const setUser = useUserStore((state) => state.setUser)
 
@@ -22,6 +23,7 @@ const LoginPage = () => {
             navigate("/dashboard")
         } catch (error) {
             console.log(error)
+            setError(error.response.data.message)
         }
     }
 
@@ -44,6 +46,9 @@ const LoginPage = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
+                {error && <div className="bg-red-500/20 border border-red-500 text-red-400 rounded-lg p-3 mb-4">
+                    <p>{error}</p>
+                </div>}
                 <button
                     className="w-full p-3 rounded-lg font-bold bg-blue-500 hover:bg-blue-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
                 >
