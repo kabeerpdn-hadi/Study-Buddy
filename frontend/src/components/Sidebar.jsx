@@ -5,6 +5,7 @@ import useUserStore from "../store/useUserStore"
 const Sidebar = () => {
     const navigate = useNavigate()
     const setUser = useUserStore((state) => state.setUser)
+    const user = useUserStore((state) => state.user)
 
     const handleLogout = async () => {
         await axios.post("/api/auth/logout")
@@ -18,6 +19,8 @@ const Sidebar = () => {
       <Link className="text-gray-300 hover:text-white font-bold p-3 rounded-xl hover:bg-gray-800" to="/courses">Browse Courses</Link>
       <Link className="text-gray-300 hover:text-white font-bold p-3 rounded-xl hover:bg-gray-800" to="/courses/new">Create Course</Link>
       <Link className="text-gray-300 hover:text-white font-bold p-3 rounded-xl hover:bg-gray-800" to="/leaderboard">Leader Board</Link>
+      <Link className="text-gray-300 hover:text-white font-bold p-3 rounded-xl hover:bg-gray-800" to="/feedback">Report FeedBack</Link>
+      {user?.role === "admin" && (<Link className="text-gray-300 hover:text-white font-bold p-3 rounded-xl hover:bg-gray-800" to="/admin">Admin</Link>)}
       <button className="text-gray-300 hover:text-white font-bold p-3 rounded-xl hover:bg-gray-800 justify-items-start" to="/logout" onClick={handleLogout}>Logout</button>
     </div>
   )

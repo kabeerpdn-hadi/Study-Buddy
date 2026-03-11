@@ -13,6 +13,8 @@ import { useLocation } from "react-router-dom";
 import BrowseCoursesPage from "./pages/BrowseCoursePage";
 import LeaderBoardPage from "./pages/LeaderBoardPage";
 import LandingPage from "./pages/LandingPage";
+import FeedbackPage from "./pages/FeedbackPage";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   const setUser = useUserStore((state) => state.setUser);
@@ -86,6 +88,22 @@ function App() {
         }
       >
       </Route>
+      <Route
+        path="/feedback"
+        element={
+          <Layout>
+            <FeedbackPage />
+          </Layout>
+        }
+      ></Route>
+      <Route
+        path="/admin"
+        element={
+          <Layout>
+            <AdminPage />
+          </Layout>
+        }
+      ></Route>
     </Routes>
   );
 }
