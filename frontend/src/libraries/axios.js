@@ -14,7 +14,7 @@ axiosInstance.interceptors.response.use(
     if (error.response.status === 401) {
       if (error.config.url === "/api/auth/refresh-token") {
         removeUser()
-        if (window.location.pathname !== "/") {
+        if (window.location.pathname !== "/" && window.location.pathname !== "/login" && window.location.pathname !== "/signup") {
           window.location.href = "/login"
         }
         return Promise.reject(error)
