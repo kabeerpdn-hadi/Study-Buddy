@@ -12,7 +12,7 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response.status === 401) {
-      if (error.config.url === "/api/auth/refresh-token") {
+      if (error.config.url === "/api/auth/refresh-token" || error.config.url === "/api/auth/login" || error.config.url === "/api/auth/signup") {
         removeUser()
         if (window.location.pathname !== "/" && window.location.pathname !== "/login" && window.location.pathname !== "/signup") {
           window.location.href = "/login"
