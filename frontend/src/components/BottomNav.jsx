@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { LayoutDashboard, BookOpen, PlusCircle, Trophy, MoreHorizontal } from "lucide-react"
+import { LayoutDashboard, BookOpen, PlusCircle, Trophy, MoreHorizontal, MessageSquareText } from "lucide-react"
 import { useState } from "react"
 
 const BottomNav = () => {
@@ -25,7 +25,10 @@ const BottomNav = () => {
             </Link>
             {isMoreOpen && (
                 <div className="fixed bottom-20 right-4 bg-gray-800 rounded-2xl p-4 flex flex-col gap-3">
-                    <Link to="/feedback" className="text-gray-300 hover:text-white font-bold" onClick={() => setIsMoreOpen(false)}>📝 Feedback</Link>
+                    <Link to="/feedback" className="text-gray-300 hover:text-white font-bold" onClick={() => setIsMoreOpen(false)}>
+                        <MessageSquareText size={24} />
+                        <p className="text-xs">Feedback</p>
+                    </Link>
                 </div>
             )}
             <button onClick={() => setIsMoreOpen(!isMoreOpen)} className="flex flex-col items-center text-gray-400 hover:text-white">
