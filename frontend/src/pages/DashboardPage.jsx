@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import useUserStore from "../store/useUserStore";
 import axios from "../libraries/axios";
 import { useState, useEffect, useRef } from "react";
+import { LogOut } from "lucide-react";
 
 const DashboardPage = () => {
   const user = useUserStore((state) => state.user);
@@ -96,7 +97,7 @@ const DashboardPage = () => {
                   onClick={handleLogout}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-400 hover:bg-red-500/10 font-bold text-sm transition-all"
                 >
-                  🚪 Logout
+                  <LogOut size={16} /> Logout
                 </button>
               </div>
             </div>
