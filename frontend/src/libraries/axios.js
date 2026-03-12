@@ -4,7 +4,7 @@ import useUserStore from "../store/useUserStore"
 const removeUser = () => useUserStore.getState().setUser(null)
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: "",
   withCredentials: true,
 });
 
