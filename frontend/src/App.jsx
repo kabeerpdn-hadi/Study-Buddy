@@ -15,6 +15,7 @@ import LeaderBoardPage from "./pages/LeaderBoardPage";
 import LandingPage from "./pages/LandingPage";
 import FeedbackPage from "./pages/FeedbackPage";
 import AdminPage from "./pages/AdminPage";
+import MessagesPage from "./pages/MessagesPage";
 
 function App() {
   const setUser = useUserStore((state) => state.setUser);
@@ -104,6 +105,7 @@ function App() {
           </Layout>
         }
       ></Route>
+      <Route path="/messages" element={<Layout><MessagesPage /></Layout>} />
     </Routes>
   );
 }

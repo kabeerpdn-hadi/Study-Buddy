@@ -10,6 +10,7 @@ const FeedbackPage = () => {
     const handleFeedback = async (e) => {
         e.preventDefault();
         try {
+            setLoading(true)
             const response = await axios.post("/api/feedback", {
                 message,
                 type,
@@ -17,6 +18,8 @@ const FeedbackPage = () => {
             console.log(response);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -56,9 +59,10 @@ const FeedbackPage = () => {
                     {/* Submit Button */}
                     <button
                         type="submit"
+                        disabled={loading || !message}
                         className="w-full p-4 rounded-2xl font-black text-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:scale-105"
                     >
-                        Submit
+                        {loading ? "Submiting..." : "Submit"}
                     </button>
                 </form>
             </div>
