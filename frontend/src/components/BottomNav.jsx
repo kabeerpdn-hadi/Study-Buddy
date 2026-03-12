@@ -25,7 +25,7 @@ const BottomNav = () => {
             </Link>
             {isMoreOpen && (
                 <div className="fixed bottom-20 right-4 bg-gray-800 rounded-2xl p-4 flex flex-col gap-3">
-                    <Link to="/feedback" className="text-gray-300 hover:text-white font-bold">📝 Feedback</Link>
+                    <Link to="/feedback" className="text-gray-300 hover:text-white font-bold" onClick={() => setIsMoreOpen(false)}>📝 Feedback</Link>
                 </div>
             )}
             <button onClick={() => setIsMoreOpen(!isMoreOpen)} className="flex flex-col items-center text-gray-400 hover:text-white">

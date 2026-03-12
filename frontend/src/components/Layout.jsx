@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
       <div className="md:hidden">
         <BottomNav />
       </div>
-      <main className="flex-1 overflow-auto ">{children}</main>
+      <main className="flex-1 overflow-auto pb-20 md:pb-0">{children}</main>
     </div>
   )
 }
