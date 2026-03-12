@@ -1,21 +1,40 @@
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../store/useUserStore";
 import axios from "../libraries/axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const DashboardPage = () => {
   const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
   const navigate = useNavigate();
   const [courses, setCourses] = useState([])
+  const [showProfileMenu, setShowProfileMenu] = useState(false)
+  const menuRef = useRef(null)
 
-  // 2️⃣ useEffect goes here, after the hooks
   useEffect(() => {
     const fetchCourses = async () => {
-      const response = await axios.get("/api/course/my-courses") // ✅
-      setCourses(response.data.courses) // store them!
+      const response = await axios.get("/api/course/my-courses")
+      setCourses(response.data.courses)
     }
     fetchCourses()
   }, [])
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setShowProfileMenu(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  const handleLogout = async () => {
+    await axios.post("/api/auth/logout")
+    setUser(null)
+    navigate("/login")
+  }
 
   const stats = [
     { label: "Level", value: user?.level ?? 1, emoji: "⚡", color: "from-yellow-400 to-orange-500" },
@@ -41,20 +60,54 @@ const DashboardPage = () => {
         <div className="text-2xl font-black tracking-tight text-white">
           🚀 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-pink-400">Study Buddy</span>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-pink-500 flex items-center justify-center font-black text-lg">
-            {user?.name?.[0]?.toUpperCase() ?? "?"}
-          </div>
-          <span className="font-bold text-gray-300">{user?.name}</span>
+
+        {/* Profile Button */}
+        <div className="relative" ref={menuRef}>
+          <button
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            className="flex items-center gap-3 p-2 rounded-2xl hover:bg-gray-800 transition-all"
+          >
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-pink-500 flex items-center justify-center font-black text-lg">
+              {user?.name?.[0]?.toUpperCase() ?? "?"}
+            </div>
+            <span className="font-bold text-gray-300 hidden sm:block">{user?.name}</span>
+          </button>
+
+          {/* Dropdown */}
+          {showProfileMenu && (
+            <div className="absolute right-0 top-14 w-64 bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl z-50 overflow-hidden">
+              {/* User Info */}
+              <div className="p-4 border-b border-gray-800">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-blue-400 to-pink-500 flex items-center justify-center font-black text-lg flex-shrink-0">
+                    {user?.name?.[0]?.toUpperCase() ?? "?"}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-black text-white truncate">{user?.name}</p>
+                    <p className="text-gray-400 text-xs truncate">{user?.email}</p>
+                    <p className="text-gray-500 text-xs capitalize mt-0.5">{user?.role} · {user?.plan} plan</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Logout */}
+              <div className="p-2">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-400 hover:bg-red-500/10 font-bold text-sm transition-all"
+                >
+                  🚪 Logout
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Hero / Profile Card */}
       <div className="relative rounded-3xl overflow-hidden mb-8 p-8 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 shadow-2xl">
-        {/* decorative blobs */}
         <div className="absolute -top-10 -right-10 w-48 h-48 bg-pink-500 opacity-20 rounded-full blur-3xl" />
         <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-blue-300 opacity-20 rounded-full blur-3xl" />
-
         <div className="relative z-10">
           <p className="text-blue-200 font-semibold text-sm uppercase tracking-widest mb-1">Welcome back 👋</p>
           <h1 className="text-4xl font-black mb-1">{user?.name}</h1>
@@ -86,32 +139,32 @@ const DashboardPage = () => {
         <div className="bg-gray-900 rounded-3xl p-6 shadow-xl">
           <h2 className="text-xl font-black mb-5 flex items-center gap-2">📖 My Courses</h2>
           <div className="flex flex-col gap-4">
+            {courses.length === 0 && (
+              <p className="text-gray-600 text-sm text-center py-6">No courses yet. Create one!</p>
+            )}
             {courses.map((course) => {
-                const completed = course.lessons.filter((lesson) => lesson.completed == true).length
-                const total = course.lessons.length
-                const progress = Math.round(completed / total * 100)
-
-                console.log(completed, total, progress)
-
-                return (
-                    <div 
-                        key={course.title} 
-                        className="bg-gray-800 rounded-2xl p-4 hover:scale-105 transition-transform"
-                        onClick={() => navigate(`/courses/${course._id}`)}
-                    >
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="font-bold flex items-center gap-2">{course.title}</span>
-                            <span className="text-sm text-gray-400 font-semibold">{progress}%</span>
-                        </div>
-                        <div className="w-full bg-gray-700 rounded-full h-2">
-                        <div
-                        className="h-2 rounded-full bg-gradient-to-r from-blue-400 to-pink-500"
-                        style={{ width: `${progress}%` }}
-                        />
-                        </div>
-                    </div>
-                )
-            }, [])}
+              const completed = course.lessons.filter((lesson) => lesson.completed === true).length
+              const total = course.lessons.length
+              const progress = Math.round(completed / total * 100)
+              return (
+                <div
+                  key={course._id}
+                  className="bg-gray-800 rounded-2xl p-4 hover:scale-105 transition-transform cursor-pointer"
+                  onClick={() => navigate(`/courses/${course._id}`)}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-bold flex items-center gap-2">{course.title}</span>
+                    <span className="text-sm text-gray-400 font-semibold">{progress}%</span>
+                  </div>
+                  <div className="w-full bg-gray-700 rounded-full h-2">
+                    <div
+                      className="h-2 rounded-full bg-gradient-to-r from-blue-400 to-pink-500"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
 
