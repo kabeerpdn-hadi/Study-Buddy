@@ -89,13 +89,6 @@ const BottomNav = () => {
                 {navItem("/courses/new", PlusCircle, "Create")}
                 {navItem("/leaderboard", Trophy, "Leaderboard")}
                 {navItem("/messages", MessageSquareText, "Messages")}
-                <button
-                    onClick={() => setShowProfile(!showProfile)}
-                    className={`flex flex-col items-center gap-1 transition-colors ${showProfile ? "text-white" : "text-gray-500 hover:text-gray-300"}`}
-                >
-                    <User size={22} />
-                    <p className="text-xs font-semibold">Profile</p>
-                </button>
             </div>
         </>
     )
