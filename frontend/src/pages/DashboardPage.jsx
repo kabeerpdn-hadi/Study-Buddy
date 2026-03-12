@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import useUserStore from "../store/useUserStore";
 import axios from "../libraries/axios";
 import { useState, useEffect, useRef } from "react";
-import { LogOut } from "lucide-react";
+import { LogOut, MessageSquareText, ShieldAlert } from "lucide-react";
 
 const DashboardPage = () => {
   const user = useUserStore((state) => state.user);
@@ -89,6 +89,24 @@ const DashboardPage = () => {
                     <p className="text-gray-500 text-xs capitalize mt-0.5">{user?.role} · {user?.plan} plan</p>
                   </div>
                 </div>
+              </div>
+
+              {/* Links */}
+              <div className="p-2 border-b border-gray-800">
+                <button
+                  onClick={() => { navigate("/messages"); setShowProfileMenu(false) }}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-300 hover:bg-gray-800 font-bold text-sm transition-all"
+                >
+                  <MessageSquareText size={16} /> Messages
+                </button>
+                {user?.role === "admin" && (
+                  <button
+                    onClick={() => { navigate("/admin"); setShowProfileMenu(false) }}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-violet-400 hover:bg-violet-500/10 font-bold text-sm transition-all"
+                  >
+                    <ShieldAlert size={16} /> Admin Panel
+                  </button>
+                )}
               </div>
 
               {/* Logout */}

@@ -1,12 +1,13 @@
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import axios from "../libraries/axios"
 import useUserStore from "../store/useUserStore"
-import { LayoutDashboard, BookOpen, PlusCircle, Trophy, MessageSquareText, LogOut } from "lucide-react"
+import { LayoutDashboard, BookOpen, PlusCircle, Trophy, MessageSquareText, LogOut, ShieldAlert } from "lucide-react"
 
 const Sidebar = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const setUser = useUserStore((state) => state.setUser)
+    const user = useUserStore((state) => state.user)
 
     const handleLogout = async () => {
         await axios.post("/api/auth/logout")
@@ -45,6 +46,21 @@ const Sidebar = () => {
                     </Link>
                 )
             })}
+
+            {/* Admin only */}
+            {user?.role === "admin" && (
+                <Link
+                    to="/admin"
+                    className={`flex items-center gap-3 font-bold p-3 rounded-xl transition-colors ${
+                        location.pathname === "/admin"
+                            ? "bg-violet-500/20 text-violet-300"
+                            : "text-violet-400 hover:text-violet-300 hover:bg-violet-500/10"
+                    }`}
+                >
+                    <ShieldAlert size={20} />
+                    Admin Panel
+                </Link>
+            )}
 
             <div className="mt-auto">
                 <button
