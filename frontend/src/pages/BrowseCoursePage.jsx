@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import axios from "../libraries/axios"
 import { useNavigate } from "react-router-dom"
+import { BookOpen, ChevronRight } from "lucide-react"
 
 const BrowseCoursesPage = () => {
     const [courses, setCourses] = useState([])
@@ -15,41 +16,51 @@ const BrowseCoursesPage = () => {
     }, [])
 
     return (
-        <div className="min-h-screen bg-gray-950 text-white p-8">
-            <h1 className="text-3xl font-black mb-6">📚 Browse Courses</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {courses.map((course) => {
-                    const completed = course.lessons.filter((lesson) => lesson.completed == true).length
-                    const total = course.lessons.length
-                    const progress = Math.round(completed / total * 100)
+        <div className="min-h-screen bg-gray-50 text-gray-900">
+            <div className="bg-white border-b border-gray-100 px-8 py-4">
+                <h1 className="text-lg font-bold text-gray-900">Browse Courses</h1>
+            </div>
 
-                    console.log(completed, total, progress)
-
-                    return (
-                        <div
-                            key={course._id}
-                            className="bg-gray-800 rounded-2xl p-5 hover:scale-105 transition-transform cursor-pointer"
-                            onClick={() => navigate(`/courses/${course._id}`)}
-                        >
-                            {/* Title & Progress % */}
-                            <div className="flex items-center justify-between mb-2">
-                                <h2 className="font-black text-lg">{course.title}</h2>
-                                <span className="text-sm text-gray-400 font-semibold">{progress}%</span>
-                            </div>
-
-                            {/* Description */}
-                            <p className="text-gray-400 text-sm mb-4">{course.description}</p>
-
-                            {/* Progress Bar */}
-                            <div className="w-full bg-gray-700 rounded-full h-2">
+            <div className="p-6 md:p-8 max-w-5xl mx-auto">
+                {courses.length === 0 ? (
+                    <div className="text-center py-24">
+                        <div className="text-5xl mb-4">📚</div>
+                        <p className="text-gray-500 font-semibold">No courses yet</p>
+                        <button onClick={() => navigate("/courses/new")} className="mt-3 text-emerald-500 font-semibold hover:underline text-sm">
+                            Create your first course →
+                        </button>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {courses.map((course) => {
+                            const completed = course.lessons.filter((l) => l.completed).length
+                            const total = course.lessons.length
+                            const progress = Math.round(completed / total * 100)
+                            return (
                                 <div
-                                    className="h-2 rounded-full bg-gradient-to-r from-blue-400 to-pink-500"
-                                    style={{ width: `${progress}%` }}
-                                />
-                            </div>
-                        </div>
-                    )
-                }, [])}
+                                    key={course._id}
+                                    className="bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-md hover:border-gray-200 transition-all cursor-pointer group"
+                                    onClick={() => navigate(`/courses/${course._id}`)}
+                                >
+                                    <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-4">
+                                        <BookOpen size={18} className="text-emerald-500" />
+                                    </div>
+                                    <div className="flex items-start justify-between mb-1">
+                                        <h2 className="font-bold text-gray-900 text-sm leading-snug flex-1 pr-2">{course.title}</h2>
+                                        <ChevronRight size={14} className="text-gray-300 group-hover:text-gray-500 flex-shrink-0 mt-0.5" />
+                                    </div>
+                                    <p className="text-gray-400 text-xs mb-4 line-clamp-2">{course.description}</p>
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex-1 bg-gray-100 rounded-full h-1.5">
+                                            <div className="h-1.5 rounded-full bg-emerald-400" style={{ width: `${progress}%` }} />
+                                        </div>
+                                        <span className="text-xs text-gray-400 font-medium">{progress}%</span>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                )}
             </div>
         </div>
     )

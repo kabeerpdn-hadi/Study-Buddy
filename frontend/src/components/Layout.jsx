@@ -3,7 +3,7 @@ import BottomNav from "./BottomNav"
 
 const Layout = ({ children }) => {
   return (
-    <div className="flex min-h-screen bg-gray-950 ">
+    <div className="flex min-h-screen bg-gray-50">
       <div className="hidden md:flex">
         <Sidebar />
       </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import axios from "../libraries/axios"
+import { ShieldAlert, Reply, Trash2 } from "lucide-react"
 
 const AdminPage = () => {
     const [feedbacks, setFeedbacks] = useState([])
@@ -41,89 +42,69 @@ const AdminPage = () => {
     }
 
     const typeConfig = {
-        complaint: { bg: "bg-red-500/10", text: "text-red-400", border: "border-red-500/20", dot: "bg-red-400", label: "Complaint" },
-        suggestion: { bg: "bg-blue-500/10", text: "text-blue-400", border: "border-blue-500/20", dot: "bg-blue-400", label: "Suggestion" },
-        praise: { bg: "bg-emerald-500/10", text: "text-emerald-400", border: "border-emerald-500/20", dot: "bg-emerald-400", label: "Praise" },
+        complaint: { bg: "bg-red-50", text: "text-red-500", border: "border-red-100", dot: "bg-red-400", label: "Complaint" },
+        suggestion: { bg: "bg-blue-50", text: "text-blue-500", border: "border-blue-100", dot: "bg-blue-400", label: "Suggestion" },
+        praise: { bg: "bg-emerald-50", text: "text-emerald-600", border: "border-emerald-100", dot: "bg-emerald-400", label: "Praise" },
+        feedback: { bg: "bg-violet-50", text: "text-violet-500", border: "border-violet-100", dot: "bg-violet-400", label: "Feedback" },
     }
 
     return (
-        <div className="min-h-screen bg-gray-950 text-white">
-            {/* Header */}
-            <div className="border-b border-gray-800 px-8 py-6">
-                <div className="max-w-5xl mx-auto flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-black tracking-tight">Admin Panel</h1>
-                        <p className="text-gray-500 text-sm mt-1">Manage user feedback & support messages</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <div className="bg-gray-800 rounded-xl px-4 py-2 text-sm font-bold text-gray-300">
-                            {feedbacks.length} messages
-                        </div>
-                    </div>
+        <div className="min-h-screen bg-gray-50 text-gray-900">
+            <div className="bg-white border-b border-gray-100 px-8 py-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <ShieldAlert size={18} className="text-violet-500" />
+                    <h1 className="text-lg font-bold text-gray-900">Admin Panel</h1>
+                </div>
+                <div className="bg-gray-100 rounded-xl px-3 py-1.5 text-sm font-semibold text-gray-500">
+                    {feedbacks.length} messages
                 </div>
             </div>
 
-            {/* Content */}
-            <div className="max-w-5xl mx-auto px-8 py-8">
+            <div className="max-w-5xl mx-auto p-6 md:p-8">
                 {feedbacks.length === 0 ? (
-                    <div className="text-center py-24 text-gray-600">
+                    <div className="text-center py-24">
                         <div className="text-5xl mb-4">📭</div>
-                        <p className="font-bold text-lg">No feedback yet</p>
-                        <p className="text-sm mt-1">Messages from users will appear here</p>
+                        <p className="font-semibold text-gray-500">No feedback yet</p>
+                        <p className="text-sm text-gray-400 mt-1">Messages from users will appear here</p>
                     </div>
                 ) : (
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-3">
                         {feedbacks.map((feedback) => {
                             const config = typeConfig[feedback.type] || typeConfig.suggestion
                             return (
-                                <div
-                                    key={feedback._id}
-                                    className="bg-gray-900 border border-gray-800 rounded-2xl p-6 hover:border-gray-700 transition-all group"
-                                >
+                                <div key={feedback._id} className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
                                     <div className="flex items-start justify-between gap-4">
-                                        {/* Left: Avatar + Info */}
-                                        <div className="flex items-start gap-4 flex-1 min-w-0">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-black text-sm flex-shrink-0">
+                                        <div className="flex items-start gap-3 flex-1 min-w-0">
+                                            <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center font-bold text-gray-600 text-sm flex-shrink-0">
                                                 {feedback.user?.name?.[0]?.toUpperCase() ?? "?"}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-3 flex-wrap mb-1">
-                                                    <span className="font-bold text-white">{feedback.user?.name ?? "Unknown"}</span>
-                                                    <span className="text-gray-500 text-sm">{feedback.user?.email}</span>
-                                                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border ${config.bg} ${config.text} ${config.border}`}>
+                                                <div className="flex items-center gap-2 flex-wrap mb-1">
+                                                    <span className="font-semibold text-gray-900 text-sm">{feedback.user?.name ?? "Unknown"}</span>
+                                                    <span className="text-gray-400 text-xs">{feedback.user?.email}</span>
+                                                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border ${config.bg} ${config.text} ${config.border}`}>
                                                         <span className={`w-1.5 h-1.5 rounded-full ${config.dot}`} />
                                                         {config.label}
                                                     </span>
                                                 </div>
-                                                <p className="text-gray-300 leading-relaxed">{feedback.message}</p>
-                                                <p className="text-gray-600 text-xs mt-3">
-                                                    {new Date(feedback.createdAt).toLocaleDateString("en-US", {
-                                                        month: "short", day: "numeric", year: "numeric",
-                                                        hour: "2-digit", minute: "2-digit"
-                                                    })}
+                                                <p className="text-gray-600 text-sm leading-relaxed">{feedback.message}</p>
+                                                <p className="text-gray-400 text-xs mt-2">
+                                                    {new Date(feedback.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
                                                 </p>
                                             </div>
                                         </div>
-
-                                        {/* Right: Actions */}
                                         <div className="flex items-center gap-2 flex-shrink-0">
                                             <button
                                                 onClick={() => { setReplyModal(feedback); setReplyMessage("") }}
-                                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 font-bold text-sm border border-blue-500/20 transition-all hover:scale-105"
+                                                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-500 font-semibold text-xs border border-blue-100 transition-all"
                                             >
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                                    <polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/>
-                                                </svg>
-                                                Reply
+                                                <Reply size={13} /> Reply
                                             </button>
                                             <button
                                                 onClick={() => setDeleteConfirm(feedback._id)}
-                                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 font-bold text-sm border border-red-500/20 transition-all hover:scale-105"
+                                                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-500 font-semibold text-xs border border-red-100 transition-all"
                                             >
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                                    <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
-                                                </svg>
-                                                Delete
+                                                <Trash2 size={13} /> Delete
                                             </button>
                                         </div>
                                     </div>
@@ -136,43 +117,33 @@ const AdminPage = () => {
 
             {/* Reply Modal */}
             {replyModal && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-gray-900 border border-gray-700 rounded-3xl p-8 w-full max-w-lg shadow-2xl">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-black">Reply to {replyModal.user?.name}</h2>
-                            <button
-                                onClick={() => setReplyModal(null)}
-                                className="text-gray-500 hover:text-white w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-800 transition-all"
-                            >✕</button>
+                <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white border border-gray-100 rounded-2xl p-6 w-full max-w-lg shadow-xl">
+                        <div className="flex items-center justify-between mb-5">
+                            <h2 className="text-base font-bold text-gray-900">Reply to {replyModal.user?.name}</h2>
+                            <button onClick={() => setReplyModal(null)} className="text-gray-400 hover:text-gray-700 w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-all text-lg">✕</button>
                         </div>
-
-                        {/* Original message */}
-                        <div className="bg-gray-800 rounded-2xl p-4 mb-5 border border-gray-700">
-                            <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider font-bold">Original message</p>
-                            <p className="text-gray-300 text-sm leading-relaxed">{replyModal.message}</p>
+                        <div className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-100">
+                            <p className="text-xs text-gray-400 mb-1 font-semibold uppercase tracking-wider">Original message</p>
+                            <p className="text-gray-600 text-sm leading-relaxed">{replyModal.message}</p>
                         </div>
-
                         <textarea
                             value={replyMessage}
                             onChange={(e) => setReplyMessage(e.target.value)}
                             placeholder="Write your reply..."
                             rows={4}
-                            className="w-full bg-gray-800 text-white placeholder-gray-500 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-blue-500 resize-none border border-gray-700 text-sm leading-relaxed"
+                            className="w-full bg-gray-50 text-gray-900 placeholder-gray-400 rounded-xl p-4 outline-none focus:ring-2 focus:ring-emerald-400 resize-none border border-gray-200 text-sm mb-4"
                         />
-
-                        <div className="flex gap-3 mt-5">
-                            <button
-                                onClick={() => setReplyModal(null)}
-                                className="flex-1 py-3 rounded-xl font-bold text-gray-400 bg-gray-800 hover:bg-gray-700 transition-all border border-gray-700"
-                            >
+                        <div className="flex gap-3">
+                            <button onClick={() => setReplyModal(null)} className="flex-1 py-2.5 rounded-xl font-semibold text-sm text-gray-500 bg-gray-100 hover:bg-gray-200 transition-all">
                                 Cancel
                             </button>
                             <button
                                 onClick={handleReply}
                                 disabled={sending || !replyMessage.trim()}
-                                className="flex-1 py-3 rounded-xl font-black bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                className="flex-1 py-2.5 rounded-xl font-bold text-sm bg-emerald-500 hover:bg-emerald-600 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                             >
-                                {sending ? "Sending..." : "Send Reply ✓"}
+                                {sending ? "Sending..." : "Send Reply"}
                             </button>
                         </div>
                     </div>
@@ -181,22 +152,18 @@ const AdminPage = () => {
 
             {/* Delete Confirm Modal */}
             {deleteConfirm && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-gray-900 border border-gray-700 rounded-3xl p-8 w-full max-w-sm shadow-2xl text-center">
-                        <div className="text-4xl mb-4">🗑️</div>
-                        <h2 className="text-xl font-black mb-2">Delete this feedback?</h2>
-                        <p className="text-gray-400 text-sm mb-7">This action cannot be undone.</p>
+                <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white border border-gray-100 rounded-2xl p-6 w-full max-w-sm shadow-xl text-center">
+                        <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <Trash2 size={20} className="text-red-500" />
+                        </div>
+                        <h2 className="text-base font-bold text-gray-900 mb-1">Delete this feedback?</h2>
+                        <p className="text-gray-400 text-sm mb-5">This action cannot be undone.</p>
                         <div className="flex gap-3">
-                            <button
-                                onClick={() => setDeleteConfirm(null)}
-                                className="flex-1 py-3 rounded-xl font-bold text-gray-400 bg-gray-800 hover:bg-gray-700 transition-all border border-gray-700"
-                            >
+                            <button onClick={() => setDeleteConfirm(null)} className="flex-1 py-2.5 rounded-xl font-semibold text-sm text-gray-500 bg-gray-100 hover:bg-gray-200 transition-all">
                                 Cancel
                             </button>
-                            <button
-                                onClick={() => handleDelete(deleteConfirm)}
-                                className="flex-1 py-3 rounded-xl font-black bg-red-500 hover:bg-red-600 transition-all"
-                            >
+                            <button onClick={() => handleDelete(deleteConfirm)} className="flex-1 py-2.5 rounded-xl font-bold text-sm bg-red-500 hover:bg-red-600 text-white transition-all">
                                 Delete
                             </button>
                         </div>

@@ -1,6 +1,7 @@
 import axios from '../libraries/axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Sparkles } from 'lucide-react';
 
 const CreateCoursesPage = () => {
     const [title, setTitle] = useState("")
@@ -12,11 +13,7 @@ const CreateCoursesPage = () => {
         e.preventDefault()
         try {
             setLoading(true)
-            const response = await axios.post("/api/course", {
-                topic: title,
-                level: level
-            })
-            console.log(response)
+            await axios.post("/api/course", { topic: title, level })
             navigate("/dashboard")
         } catch (error) {
             console.log(error)
@@ -32,60 +29,64 @@ const CreateCoursesPage = () => {
     ]
 
     return (
-        <div className="min-h-screen bg-gray-950 text-white p-8 flex flex-col items-center justify-center">
-            <div className="w-full max-w-xl">
-                {/* Header */}
-                <div className="mb-10 text-center">
-                    <div className="text-5xl mb-4">✨</div>
-                    <h1 className="text-4xl font-black mb-2">Create a Course</h1>
-                    <p className="text-gray-400 font-medium">Tell us what you want to learn — AI will build it for you!</p>
-                </div>
+        <div className="min-h-screen bg-gray-50 text-gray-900">
+            <div className="bg-white border-b border-gray-100 px-8 py-4">
+                <h1 className="text-lg font-bold text-gray-900">Create Course</h1>
+            </div>
 
-                <form onSubmit={handleCreateCourse} className="flex flex-col gap-6">
-                    {/* Topic Input */}
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-gray-300 uppercase tracking-widest">📚 Topic</label>
-                        <input
-                            type="text"
-                            placeholder="e.g. Python, Machine Learning, Web Design..."
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className="bg-gray-800 text-white placeholder-gray-500 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-blue-500 font-medium text-lg"
-                        />
-                    </div>
-
-                    {/* Level Selector */}
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-gray-300 uppercase tracking-widest">🎯 Level</label>
-                        <div className="grid grid-cols-3 gap-3">
-                            {levels.map((l) => (
-                                <button
-                                    type="button"
-                                    key={l.value}
-                                    onClick={() => setLevel(l.value)}
-                                    className={`rounded-2xl p-4 flex flex-col items-center gap-1 font-bold transition-all border-2 ${
-                                        level === l.value
-                                            ? "border-blue-500 bg-blue-500/20 text-white"
-                                            : "border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-500"
-                                    }`}
-                                >
-                                    <span className="text-2xl">{l.emoji}</span>
-                                    <span className="text-sm">{l.label}</span>
-                                    <span className="text-xs font-normal opacity-70">{l.desc}</span>
-                                </button>
-                            ))}
+            <div className="p-6 md:p-8 max-w-xl mx-auto">
+                <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm">
+                    <div className="text-center mb-8">
+                        <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <Sparkles size={24} className="text-emerald-500" />
                         </div>
+                        <h2 className="text-xl font-black text-gray-900">AI Course Generator</h2>
+                        <p className="text-gray-400 text-sm mt-1">Tell us what you want to learn</p>
                     </div>
 
-                    {/* Submit Button */}
-                    <button
-                        type="submit"
-                        disabled={loading || !title}
-                        className="w-full p-4 rounded-2xl font-black text-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:scale-105"
-                    >
-                        {loading ? "🤖 Generating your course..." : "✨ Generate Course"}
-                    </button>
-                </form>
+                    <form onSubmit={handleCreateCourse} className="flex flex-col gap-6">
+                        <div className="flex flex-col gap-2">
+                            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Topic</label>
+                            <input
+                                type="text"
+                                placeholder="e.g. Python, Machine Learning, Web Design..."
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className="bg-gray-50 text-gray-900 placeholder-gray-400 rounded-xl px-4 py-3 text-sm border border-gray-200 outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all"
+                            />
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Level</label>
+                            <div className="grid grid-cols-3 gap-3">
+                                {levels.map((l) => (
+                                    <button
+                                        type="button"
+                                        key={l.value}
+                                        onClick={() => setLevel(l.value)}
+                                        className={`rounded-xl p-4 flex flex-col items-center gap-1 font-semibold transition-all border-2 text-sm ${
+                                            level === l.value
+                                                ? "border-emerald-400 bg-emerald-50 text-emerald-700"
+                                                : "border-gray-100 bg-white text-gray-500 hover:border-gray-300"
+                                        }`}
+                                    >
+                                        <span className="text-2xl">{l.emoji}</span>
+                                        <span>{l.label}</span>
+                                        <span className="text-xs font-normal text-gray-400">{l.desc}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading || !title}
+                            className="w-full py-3 rounded-xl font-bold text-sm bg-emerald-500 hover:bg-emerald-600 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        >
+                            {loading ? "🤖 Generating your course..." : "✨ Generate Course"}
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     )
